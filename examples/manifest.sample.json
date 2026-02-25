@@ -1,0 +1,61 @@
+{
+  "project": {
+    "name": "demo-enterprise-app",
+    "version": "1.0.0",
+    "installRoot": "D:/deploy/demo",
+    "publisher": "Acme Corp"
+  },
+  "advanced": {
+    "enableLogs": true,
+    "showProgress": true,
+    "smartExtract": true,
+    "logRetentionDays": 30
+  },
+  "components": [
+    {
+      "name": "jdk",
+      "enabled": true,
+      "installer": "packages/jdk-17.exe",
+      "installPath": "D:/env/jdk17",
+      "silentArgs": "/s",
+      "version": "17.0.11",
+      "preChecks": ["folderConflict", "sameVersion"],
+      "conflictPolicy": "backup_then_overwrite",
+      "postActions": ["setEnv", "appendPath"]
+    },
+    {
+      "name": "tomcat",
+      "enabled": true,
+      "installer": "packages/tomcat-10.exe",
+      "installPath": "D:/env/tomcat10",
+      "silentArgs": "/S",
+      "serviceName": "Tomcat10",
+      "preChecks": ["folderConflict", "serviceConflict", "portConflict"],
+      "conflictPolicy": "ask_user",
+      "postActions": ["registerService", "setServiceAutoStart", "startService"]
+    },
+    {
+      "name": "nginx",
+      "enabled": true,
+      "installer": "packages/nginx.zip",
+      "installPath": "D:/env/nginx",
+      "silentArgs": "",
+      "serviceName": "Nginx",
+      "preChecks": ["folderConflict", "serviceConflict", "portConflict"],
+      "conflictPolicy": "rename_old_folder",
+      "postActions": ["registerService", "setServiceAutoStart", "startService"]
+    }
+  ],
+  "artifacts": {
+    "jar": "upload/app.jar",
+    "war": "upload/app.war",
+    "frontendZip": "upload/dist.zip",
+    "webTargetPriority": ["tomcat", "nginx"]
+  },
+  "execution": {
+    "stopOnFailure": true,
+    "allowResume": true,
+    "requireAdmin": true,
+    "rollbackOnFailure": false
+  }
+}
