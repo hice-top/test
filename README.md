@@ -232,3 +232,4 @@ python3 -m app.main install runtime/manifest.json --runtime-dir runtime
 2. 将 `app.main install` 作为安装引擎调用
 3. 增加真实安装器执行器（MSI/EXE 静默参数）
 4. 使用 `npm run pack:win` 输出最终 `.exe`
+
