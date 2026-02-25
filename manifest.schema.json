@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/windows-deployer/manifest.schema.json",
+  "title": "Windows One-Click Deployment Manifest",
+  "type": "object",
+  "required": ["project", "advanced", "components", "artifacts", "execution"],
+  "additionalProperties": false,
+  "properties": {
+    "project": {
+      "type": "object",
+      "required": ["name", "version", "installRoot"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 },
+        "installRoot": { "type": "string", "minLength": 1 },
+        "publisher": { "type": "string" }
+      }
+    },
+    "advanced": {
+      "type": "object",
+      "required": ["enableLogs", "showProgress", "smartExtract"],
+      "additionalProperties": false,
+      "properties": {
+        "enableLogs": { "type": "boolean" },
+        "showProgress": { "type": "boolean" },
+        "smartExtract": { "type": "boolean" },
+        "logRetentionDays": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "enabled",
+          "installer",
+          "installPath",
+          "silentArgs",
+          "preChecks",
+          "conflictPolicy",
+          "postActions"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": ["jdk", "tomcat", "mysql", "sqlserver", "redis", "nginx", "custom"]
+          },
+          "enabled": { "type": "boolean" },
+          "installer": { "type": "string", "minLength": 1 },
+          "installPath": { "type": "string", "minLength": 1 },
+          "silentArgs": { "type": "string" },
+          "serviceName": { "type": "string" },
+          "version": { "type": "string" },
+          "preChecks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "windowsFeature",
+                "folderConflict",
+                "sameVersion",
+                "serviceConflict",
+                "portConflict"
+              ]
+            }
+          },
+          "conflictPolicy": {
+            "type": "string",
+            "enum": [
+              "overwrite",
+              "skip",
+              "backup_then_overwrite",
+              "rename_old_folder",
+              "rename_service",
+              "uninstall_old",
+              "ask_user"
+            ]
+          },
+          "postActions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "setEnv",
+                "appendPath",
+                "registerService",
+                "setServiceAutoStart",
+                "startService"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "required": ["webTargetPriority"],
+      "additionalProperties": false,
+      "properties": {
+        "jar": { "type": "string" },
+        "war": { "type": "string" },
+        "frontendZip": { "type": "string" },
+        "webTargetPriority": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["tomcat", "nginx"] },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "required": ["stopOnFailure", "allowResume", "requireAdmin"],
+      "additionalProperties": false,
+      "properties": {
+        "stopOnFailure": { "type": "boolean" },
+        "allowResume": { "type": "boolean" },
+        "requireAdmin": { "type": "boolean" },
+        "rollbackOnFailure": { "type": "boolean" }
+      }
+    }
+  }
+}
