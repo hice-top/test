@@ -193,3 +193,43 @@
 ```bash
 python3 tools/validate_manifest.py examples/manifest.sample.json
 ```
+
+---
+
+## 12. 完整可运行版本（本仓库）
+当前仓库已经提供一个 **可直接运行的原型版本**（命令行模式），包含：
+- 初始化 manifest 模板
+- 校验 manifest
+- 按 manifest 执行部署流程（模拟安装与分发）
+- 输出安装日志、断点状态、部署报告
+
+### 12.1 运行环境
+- Python 3.9+
+- 无第三方依赖
+
+### 12.2 快速开始
+```bash
+# 1) 生成 manifest（可编辑）
+python3 -m app.main init --output runtime/manifest.json
+
+# 2) 校验 manifest
+python3 -m app.main validate runtime/manifest.json
+
+# 3) 执行安装流程
+python3 -m app.main install runtime/manifest.json --runtime-dir runtime
+```
+
+### 12.3 输出内容
+安装后可在 `runtime/` 下看到：
+- `logs/install.log`：执行日志
+- `state.json`：断点状态（可配合 `--resume` 继续）
+- `report.json`：结果报告（步骤状态、时间、失败信息）
+- `sandbox_install/`：模拟部署产物目录
+
+### 12.4 继续开发为 GUI/EXE
+当前版本为 CLI 可运行内核。若要形成最终 Windows GUI 一键安装器，可在此基础上新增：
+1. Electron 配置界面（Builder UI）
+2. 将 `app.main install` 作为安装引擎调用
+3. 增加真实安装器执行器（MSI/EXE 静默参数）
+4. 使用 `npm run pack:win` 输出最终 `.exe`
+
